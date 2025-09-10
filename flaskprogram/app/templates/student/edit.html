@@ -1,0 +1,96 @@
+{% extends "layout.html" %}  <!-- 继承 layout.html 模板 -->
+
+{% block content %}  <!-- 定义内容块 -->
+<div class="edit-student-container" style="max-width: 800px; margin: 30px auto; padding: 0 20px;">
+    <!-- 学生信息编辑容器，设置最大宽度、居中显示和内边距 -->
+    <div class="card" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px;">
+        <!-- 卡片样式 -->
+        <h1 style="color: #2c3e50; text-align: center; margin-bottom: 30px; font-size: 1.8rem;">
+            <!-- 标题 -->
+            <i class="fas fa-user-edit"></i> 编辑学生信息
+        </h1>
+
+        <form method="post" class="form">
+            <!-- 表单，使用 POST 方法提交数据 -->
+            <!-- 学号字段（只读） -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <!-- 表单组，设置底部边距 -->
+                <label for="student_id" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <!-- 标签 -->
+                    <i class="fas fa-id-card"></i> 学号:
+                </label>
+                <input type="text" id="student_id" name="student_id"
+                       value="{{ student.student_id }}" readonly
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; background-color: #f8f9fa; cursor: not-allowed;">
+                <!-- 输入框，设置为只读 -->
+            </div>
+
+            <!-- 以下各表单组结构与学号表单组类似，分别用于编辑姓名、性别、专业、班级和生源地 -->
+            <!-- 姓名字段 -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="name" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <i class="fas fa-user"></i> 姓名:
+                </label>
+                <input type="text" id="name" name="name"
+                       value="{{ student.name }}" required
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease;">
+            </div>
+
+            <!-- 性别选择 -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="gender" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <i class="fas fa-venus-mars"></i> 性别:
+                </label>
+                <select id="gender" name="gender" required
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23333%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3e%3cpolyline points=%226 9 12 15 18 9%22/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 15px center; background-size: 1em;">
+                    <option value="男" {% if student.gender=='男' %}selected{% endif %}>男</option>
+                    <option value="女" {% if student.gender=='女' %}selected{% endif %}>女</option>
+                </select>
+            </div>
+
+            <!-- 专业字段 -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="major" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <i class="fas fa-graduation-cap"></i> 专业:
+                </label>
+                <input type="text" id="major" name="major"
+                       value="{{ student.major }}" required
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease;">
+            </div>
+
+            <!-- 班级字段 -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="class_" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <i class="fas fa-chalkboard"></i> 班级:
+                </label>
+                <input type="text" id="class_" name="class_"
+                       value="{{ student.class_ }}"
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease;">
+            </div>
+
+            <!-- 生源地字段 -->
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label for="hometown" style="display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50;">
+                    <i class="fas fa-map-marker-alt"></i> 生源地:
+                </label>
+                <input type="text" id="hometown" name="hometown"
+                       value="{{ student.hometown }}"
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; transition: border-color 0.3s ease;">
+            </div>
+
+            <!-- 按钮区域 -->
+            <div class="form-actions" style="display: flex; gap: 15px; justify-content: center;">
+                <!-- 表单操作按钮区域，使用 Flexbox 布局 -->
+                <button type="submit" class="btn" style="background-color: #3498db; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                    <!-- 提交按钮，更新信息 -->
+                    <i class="fas fa-save"></i> 更新信息
+                </button>
+                <a href="{{ url_for('main.student_list') }}" class="btn" style="background-color: #95a5a6; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <!-- 取消按钮，返回学生列表页面 -->
+                    <i class="fas fa-times"></i> 取消
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

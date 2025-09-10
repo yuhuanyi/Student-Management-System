@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{# 继承自 layout.html 模板，这里开始定义内容块 #}
+{% block content %}
+    {# 显示页面标题 #}
+    <h1>成绩查询</h1>
+    {# 创建一个表单，使用 GET 方法提交数据 #}
+    <form method="get" class="form">
+        {# 学号输入框的表单组 #}
+        <div class="form-group">
+            {# 学号输入框的标签，包含图标 #}
+            <label for="student_id"><i class="fas fa-id-card"></i> 学号:</label>
+            {# 文本输入框，用于输入学号 #}
+            <input type="text" id="student_id" name="student_id">
+        </div>
+        {# 课程 ID 输入框的表单组 #}
+        <div class="form-group">
+            {# 课程 ID 输入框的标签，包含图标 #}
+            <label for="course_id"><i class="fas fa-book"></i> 课程ID:</label>
+            {# 数字输入框，用于输入课程 ID #}
+            <input type="number" id="course_id" name="course_id">
+        </div>
+        {# 提交按钮，点击后提交表单进行查询 #}
+        <input type="submit" value="查询" class="btn">
+    </form>
+    {# 如果 scores 变量存在，则显示成绩表格 #}
+    {% if scores %}
+    {# 成绩表格 #}
+    <table class="table">
+        {# 表格头部 #}
+        <thead>
+            <tr>
+                {# 表格列标题：学号 #}
+                <th>学号</th>
+                {# 表格列标题：课程 ID #}
+                <th>课程ID</th>
+                {# 表格列标题：成绩 #}
+                <th>成绩</th>
+            </tr>
+        </thead>
+        {# 表格主体 #}
+        <tbody>
+            {# 遍历 scores 列表，为每个成绩项生成一行表格数据 #}
+            {% for score in scores %}
+            <tr>
+                {# 显示学生学号 #}
+                <td>{{ score.student_id }}</td>
+                {# 显示课程 ID #}
+                <td>{{ score.course_id }}</td>
+                {# 显示成绩 #}
+                <td>{{ score.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}

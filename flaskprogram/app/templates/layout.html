@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 设置字符编码为 UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- 设置页面在不同设备上的显示效果 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 页面标题 -->
+    <title>校园综合管理系统</title>
+    <!-- 引入静态 CSS 文件 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 头部样式，设置背景颜色、文字颜色、内边距、阴影和过渡效果 */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+        /* 鼠标悬停在头部时，改变背景颜色 */
+        header:hover {
+            background-color: #34495e;
+        }
+        /* 头部内容容器，设置最大宽度、居中显示、使用 Flex 布局 */
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        /*  logo 容器，使用 Flex 布局 */
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        /* logo 图标，设置右边距 */
+        .logo i {
+            margin-right: 10px;
+        }
+        /* 导航栏，使用 Flex 布局，居中显示 */
+        nav {
+            display: flex;
+            justify-content: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        /* 导航栏链接，设置文字颜色、去除下划线、内边距和过渡效果 */
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        /* 鼠标悬停在导航栏链接上时，改变背景颜色和圆角 */
+        nav a:hover {
+            background-color: #3498db;
+            border-radius: 4px;
+        }
+        /* 用户信息容器，使用 Flex 布局，靠右显示 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: auto; /* 确保用户信息靠右显示 */
+        }
+        /* 用户信息文本，设置右边距 */
+        .user-info span {
+            margin-right: 15px;
+        }
+        /* 用户信息链接，设置文字颜色和过渡效果，使用 Flex 布局 */
+        .user-info a {
+            color: #f39c12;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        /* 鼠标悬停在用户信息链接上时，改变文字颜色 */
+        .user-info a:hover {
+            color: #e67e22;
+        }
+        /* 用户信息图标，设置右边距 */
+        .user-info i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header>
+        <!-- 头部内容容器 -->
+        <div class="header-content">
+            <!-- logo 容器 -->
+            <div class="logo">
+                <!-- 显示毕业帽图标 -->
+                <i class="fas fa-graduation-cap"></i>
+                <!-- 显示系统名称 -->
+                <h1>校园综合管理系统</h1>
+            </div>
+            <!-- 导航栏 -->
+            <nav>
+                <!-- 首页链接，根据当前页面高亮显示 -->
+                <a href="{{ url_for('main.home') }}" class="{% if request.endpoint == 'main.home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> 首页
+                </a>
+                <!-- 学生管理链接，根据当前页面高亮显示 -->
+                <a href="{{ url_for('main.student_list') }}" class="{% if 'student' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-users"></i> 学生管理
+                </a>
+                <!-- 课程管理链接，根据当前页面高亮显示 -->
+                <a href="{{ url_for('main.course_list') }}" class="{% if 'course' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-book"></i> 课程管理
+                </a>
+                <!-- 成绩录入链接，根据当前页面高亮显示 -->
+                <a href="{{ url_for('main.score_input') }}" class="{% if 'score' in request.endpoint %}active{% endif %}">
+                    <i class="fas fa-chart-bar"></i> 成绩录入
+                </a>
+                <!-- 可视化链接，根据当前页面高亮显示 -->
+                <a href="{{ url_for('main.visualization') }}" class="{% if request.endpoint == 'main.visualization' %}active{% endif %}">
+                    <i class="fas fa-chart-pie"></i> 可视化
+                </a>
+            </nav>
+            <!-- 如果用户已登录，显示用户信息和退出链接 -->
+            {% if current_user.is_authenticated %}
+            <div class="user-info">
+                <!-- 显示用户图标 -->
+                <i class="fas fa-user-circle"></i>
+                <!-- 显示用户名 -->
+                <span>{{ current_user.username }}</span>
+                <!-- 退出链接 -->
+                <a href="{{ url_for('main.logout') }}">
+                    <i class="fas fa-sign-out-alt"></i> 退出
+                </a>
+            </div>
+            {% endif %}
+            <!-- 如果用户未登录，显示注册链接 -->
+            {% if not current_user.is_authenticated %}
+            <div class="user-info">
+                <!-- 注册链接 -->
+                <a href="{{ url_for('main.register') }}">
+                    <i class="fas fa-user-plus"></i> 注册
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- 主体内容区域 -->
+    <main>
+        <!-- 内容容器 -->
+        <div class="container">
+            <!-- 获取并显示闪现消息 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <!-- 闪现消息容器 -->
+                    <div class="flash-messages">
+                        <!-- 遍历闪现消息 -->
+                        {% for category, message in messages %}
+                            <!-- 显示闪现消息，设置背景颜色、内边距、圆角和关闭按钮 -->
+                            <div class="alert alert-{{ category }}" style="padding: 15px; border-radius: 4px; margin-bottom: 15px; position: relative;">
+                                {{ message }}
+                                <!-- 关闭按钮，点击后隐藏消息 -->
+                                <button class="close" onclick="this.parentElement.style.display='none'" style="position: absolute; top: 5px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- 子模板内容插入点 -->
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- 页脚区域 -->
+    <footer>
+        <!-- 显示版权信息 -->
+        <p>&copy; 2025 校园综合管理系统 | 基于 Flask 和 SQLite</p>
+    </footer>
+
+    <!-- 引入 ECharts 库 -->
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+    <script>
+        // 关闭警告消息
+        document.querySelectorAll('.close').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+    </script>
+    <!-- 子模板脚本插入点 -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

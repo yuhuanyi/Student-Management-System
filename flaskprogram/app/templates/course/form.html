@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <!-- 页面标题 -->
+    <h1>添加新课程</h1>
+    <!-- 表单，使用 POST 方法提交数据 -->
+    <form method="post" class="form">
+        <!-- 课程名称输入框，必填 -->
+        <div class="form-group">
+            <label for="course_name"><i class="fas fa-book"></i> 课程名称:</label>
+            <input type="text" id="course_name" name="course_name" class="form-control" required>
+        </div>
+        <!-- 学分输入框，必填，范围在 1 到 10 之间 -->
+        <div class="form-group">
+            <label for="credit"><i class="fas fa-coins"></i> 学分:</label>
+            <input type="number" id="credit" name="credit" class="form-control"
+                   min="1" max="10" required>
+        </div>
+        <!-- 保存按钮，用于提交新课程信息 -->
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> 保存
+        </button>
+        <!-- 取消按钮，返回课程列表页面 -->
+        <a href="{{ url_for('main.course_list') }}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> 取消
+        </a>
+    </form>
+{% endblock %}

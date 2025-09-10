@@ -1,0 +1,78 @@
+flaskprogram/
+├── app/                      # 应用核心模块
+│   ├── __init__.py           # 初始化Flask应用，注册蓝图和数据库连接
+│   ├── routes.py             # 路由定义
+│   ├── models.py             # 数据库模型定义
+│   ├── templates/            # 前端HTML模板
+│   │   ├── layout.html       # 基础模板，定义页面框架
+│   │   ├── home.html         # 系统首页，展示概览信息和操作入口
+│   │   ├── login.html        # 登录页面，处理用户认证逻辑
+│   │   ├── student/          # 学生管理页面
+│   │   │   ├── list.html     # 学生列表页，支持分页、搜索、筛选
+│   │   │   ├── form.html     # 学生信息表单
+│   │   │   └── scores.html   # 学生成绩详情页
+│   │   ├── course/           # 课程管理页面
+│   │   │   ├── list.html     # 课程列表页
+│   │   │   └── form.html     # 课程信息表单
+│   │   ├── score/            # 成绩管理页面
+│   │   │   ├── input.html    # 成绩录入页面
+│   │   │   └── query.html    # 成绩查询页面
+│   │   └── visualization/    # 数据可视化页面
+│   │       └── index.html    # 统计图表展示页
+│   ├── static/               # 静态资源文件
+│   │   ├── css/              # 样式表
+│   │   │   └── main.css      # 全局样式定义
+│   │   └── js/               # JavaScript脚本
+│   │       ├── echarts.min.js # ECharts图表库（用于数据可视化）
+│   │       └── visual.js     # 图表渲染逻辑（与可视化页面配合）
+│   └── utils.py              # 工具函数库：
+├── config.py                 # 应用配置文件
+├── requirements.txt          # 项目依赖清单
+├── xxq.db                    # SQLite数据库文件
+└── run.py                    # 应用启动脚本
+
+已注册用户
+yyx
+666666
+yhy
+123456
+
+
+course 表
+字段名	数据类型	约束条件
+course_id	INTEGER
+course_name	TEXT	NOT NULL
+credit	INTEGER	NOT NULL
+
+score 表
+字段名	数据类型	约束条件
+id	INTEGER
+student_id	TEXT	NOT NULL
+course_id	INTEGER	NOT NULL
+score	REAL
+
+student 表
+字段名	数据类型	约束条件
+student_id	TEXT
+name	TEXT	NOT NULL
+gender	TEXT	DEFAULT ' 男'
+major	TEXT	NOT NULL
+class	TEXT
+hometown	TEXT
+password	TEXT	NOT NULL DEFAULT '123456'
+
+user 表
+字段名	数据类型	约束条件
+id	INTEGER
+username	TEXT	NOT NULL
+password	TEXT	NOT NULL
+
+关键知识点：
+特性	        GET	                  POST
+后退/刷新	无害	                  触发重新提交警告
+历史记录	    参数保留在URL中	      参数不可见
+安全性	    参数暴露在地址栏	      参数隐藏在请求体中
+数据长度      受限（URL长度限制）	  无限制
+缓存	        可缓存	              不可缓存
+幂等性	    是（多次请求结果相同）	  否（可能产生副作用）
+使用场景	    搜索、页面跳转、获取资源  登录、支付、表单提交

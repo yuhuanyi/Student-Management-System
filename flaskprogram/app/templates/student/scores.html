@@ -1,0 +1,160 @@
+{% extends "layout.html" %}  <!-- 继承 layout.html 模板 -->
+
+{% block content %}  <!-- 定义内容块 -->
+<div class="student-scores-container" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
+    <!-- 学生成绩容器，设置最大宽度、居中显示和内边距 -->
+    <div class="card" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px;">
+        <!-- 卡片样式 -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
+            <!-- 标题和返回按钮区域，使用 Flexbox 布局 -->
+            <div>
+                <h1 style="color: #2c3e50; margin-top: 0; margin-bottom: 15px; font-size: 1.8rem;">
+                    <!-- 标题，显示学生姓名 -->
+                    <i class="fas fa-file-alt"></i> {{ student.name }}的成绩单
+                </h1>
+
+                <div class="student-info" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; background-color: #f8f9fa; padding: 20px; border-radius: 6px;">
+                    <!-- 学生信息网格布局 -->
+                    <div><strong><i class="fas fa-id-card"></i> 学号:</strong> {{ student.student_id }}</div>
+                    <div><strong><i class="fas fa-graduation-cap"></i> 专业:</strong> {{ student.major }}</div>
+                    <div><strong><i class="fas fa-chalkboard"></i> 班级:</strong> {{ student.class_ }}</div>
+                    <div><strong><i class="fas fa-chart-line"></i> 平均分:</strong>
+                        <span style="font-weight: bold; font-size: 1.1rem; color: {{ 'green' if average_score >= 60 else 'red' }}">
+                            <!-- 平均分，根据分数显示不同颜色 -->
+                            {{ average_score }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a href="{{ url_for('main.student_list') }}"
+                   style="background-color: #3498db; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; display: inline-flex; align-items: center; gap: 8px;">
+                    <!-- 返回列表按钮 -->
+                    <i class="fas fa-arrow-left"></i> 返回列表
+                </a>
+            </div>
+        </div>
+
+        <!-- 成绩表格 -->
+        <div style="overflow-x: auto;">
+            <!-- 表格容器，设置水平滚动 -->
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <!-- 表格，设置宽度、边框合并和顶部边距 -->
+                <thead>
+                    <!-- 表格头部 -->
+                    <tr style="background-color: #3498db; color: white;">
+                        <!-- 表头行 -->
+                        <th style="padding: 12px 15px; text-align: left;">课程名称</th>
+                        <th style="padding: 12px 15px; text-align: left;">学分</th>
+                        <th style="padding: 12px 15px; text-align: center;">成绩</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 表格主体 -->
+                    {% for score in scores %}
+                    <tr style="border-bottom: 1px solid #e9ecef;">
+                        <!-- 成绩信息行 -->
+                        <td style="padding: 12px 15px;">{{ score.course.course_name }}</td>
+                        <td style="padding: 12px 15px;">{{ score.course.credit }}</td>
+                        <td style="padding: 12px 15px; text-align: center; font-weight: bold;
+                            color: {% if score.score < 60 %}red{% elif score.score >= 90 %}green{% else %}#2c3e50{% endif %};">
+                            <!-- 成绩，根据分数显示不同颜色 -->
+                            {{ score.score }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <!-- 没有成绩记录时显示的提示信息 -->
+                        <td colspan="3" style="padding: 20px; text-align: center; color: #7f8c8d;">
+                            <i class="fas fa-exclamation-circle"></i> 该学生暂无成绩记录
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 新增：成绩分布饼图区域（移至表格下方） -->
+        <div style="margin-top: 30px;">
+            <!-- 饼图容器，设置顶部边距 -->
+            <h2 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.4rem;">
+                <!-- 饼图标题 -->
+                <i class="fas fa-chart-pie"></i> 课程成绩分布
+            </h2>
+            <div id="score-pie-chart" style="width: 100%; height: 400px;"></div>
+            <!-- 饼图显示区域 -->
+        </div>
+
+        <!-- 添加成绩按钮 -->
+        <div style="margin-top: 30px; text-align: center;">
+            <!-- 按钮容器，设置顶部边距和居中对齐 -->
+            <a href="{{ url_for('main.score_input') }}?student_id={{ student.student_id }}"
+               style="background-color: #2ecc71; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; display: inline-flex; align-items: center; gap: 8px;">
+                <!-- 添加成绩按钮，传递学生 ID -->
+                <i class="fas fa-plus-circle"></i> 添加成绩
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 ECharts CDN -->
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var pieChart = echarts.init(document.getElementById('score-pie-chart'));
+
+    // 处理后端传递的成绩分布数据
+    var scoreDistribution = {{ score_distribution|tojson }};
+    var dataForPie = [];
+    for (var key in scoreDistribution) {
+        dataForPie.push({
+            name: key,
+            value: scoreDistribution[key]
+        });
+    }
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '成绩分布',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}门课程 ({d}%)'
+        },
+        legend: {
+            orient: 'horizontal',
+            bottom: '5%',
+            left: 'center'
+        },
+        series: [
+            {
+                name: '课程数量',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                data: dataForPie,
+                label: {
+                    formatter: '{b}: {c}门 ({d}%)'
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    pieChart.setOption(option);
+
+    // 响应窗口大小变化
+    window.addEventListener('resize', function() {
+        pieChart.resize();
+    });
+</script>
+{% endblock %}
